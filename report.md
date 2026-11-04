@@ -64,14 +64,18 @@ también lo es.
 ## 4. Variantes
 
 - **Costos:** `greedy_budgeted_select` usa ganancia marginal por costo y compara
-  además el mejor nodo individual factible. La garantía de `1-1/e` debe
-  citarse para la variante de *budgeted maximum coverage*; no se debe afirmar
-  automáticamente la cota de cardinalidad sin esta adaptación.
+  además el mejor nodo individual factible. Es una heurística para *budgeted
+  maximum coverage*. La cota de `1-1/e` de la sección anterior no se traslada
+  automáticamente: una demostración rigurosa debe usar el teorema específico
+  de cobertura con presupuesto y sus hipótesis, no la restricción de
+  cardinalidad.
 - **Fallos:** `select_over_rounds` reconstruye el conjunto activo después de
   cada ronda y usa una semilla para reproducir los fallos.
-- **Vecindarios:** `neighborhood_utility` agrega el efecto de los vecinos. Si
-  el modelo de influencia no mantiene submodularidad, solo debe presentarse
-  como heurística y medirse, no como una aplicación automática del teorema.
+- **Vecindarios:** `neighborhood_utility` agrega el efecto de todos los
+  vecinos afectados, incluso cuando también fueron seleccionados. Este modelo
+  se analiza por separado; si la función resultante no es monótona y
+  submodular, solo debe presentarse como heurística y medirse, no como una
+  aplicación automática del teorema.
 
 ## 5. Validación experimental
 
@@ -81,11 +85,11 @@ Ejecutar:
 python -m red_project.cli experiment --output results
 ```
 
-Se usan cinco tamaños crecientes y semilla fija. `times.csv` contiene tiempos,
-utilidades y razón greedy/óptimo; `times.png` contrasta las curvas. Para el
-informe final se deben repetir varias veces cada tamaño, reportar promedio y
-desviación, y explicar que la fuerza bruta solo puede crecer hasta tamaños que
-permitan terminar en el equipo disponible.
+Se usan cinco tamaños crecientes y 20 repeticiones por tamaño. `times.csv`
+contiene tiempos, utilidades, razón greedy/óptimo y semilla;
+`summary.csv` contiene promedio y desviación estándar; `times.png` contrasta
+tiempos y `approximation.png` contrasta calidad. La fuerza bruta solo puede
+crecer hasta tamaños que permitan terminar en el equipo disponible.
 
 ## 6. Referencia
 

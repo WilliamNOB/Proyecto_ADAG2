@@ -15,6 +15,7 @@ def main() -> None:
     subparsers.add_parser("demo")
     experiment = subparsers.add_parser("experiment")
     experiment.add_argument("--output", type=Path, default=Path("results"))
+    experiment.add_argument("--repetitions", type=int, default=20)
     args = parser.parse_args()
     if args.command == "demo":
         allocation = greedy_allocate(
@@ -26,7 +27,7 @@ def main() -> None:
         print("Selección greedy:", greedy_select(4, 2, utility))
         print("Óptimo exacto:", brute_force_select(4, 2, utility))
     else:
-        print(f"Resultados escritos en {run_experiment(args.output)}")
+        print(f"Resultados escritos en {run_experiment(args.output, repetitions=args.repetitions)}")
 
 
 if __name__ == "__main__":

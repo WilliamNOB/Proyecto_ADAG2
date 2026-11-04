@@ -2,7 +2,8 @@
 
 from dataclasses import dataclass
 from itertools import combinations
-from typing import Callable, Iterable, Sequence
+import math
+from typing import Callable, Sequence
 
 SetUtility = Callable[[frozenset[int]], float]
 
@@ -72,10 +73,11 @@ def greedy_budgeted_select(coverage: Sequence[set[int]],
     función devuelve el mejor entre esa solución greedy y el mejor nodo
     factible, haciendo explícita esa salvaguarda.
     """
-    if len(coverage) != len(costs) or budget < 0:
+    if (len(coverage) != len(costs) or not math.isfinite(budget)
+            or budget < 0):
         raise ValueError("cobertura, costos y presupuesto son incompatibles")
-    if any(cost <= 0 for cost in costs):
-        raise ValueError("cada costo debe ser positivo")
+    if any(not math.isfinite(cost) or cost <= 0 for cost in costs):
+        raise ValueError("cada costo debe ser finito y positivo")
     selected: set[int] = set()
     covered: set[int] = set()
     spent = 0.0

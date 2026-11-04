@@ -1,6 +1,7 @@
 """Variantes obligatorias: fallos entre rondas y externalidades de vecinos."""
 
 from dataclasses import dataclass
+import math
 import random
 from typing import Sequence
 
@@ -17,7 +18,9 @@ def select_over_rounds(node_count: int, k: int, rounds: int,
                        utility: SetUtility, failure_probability: float,
                        seed: int = 0) -> RoundResult:
     """Selecciona en cada ronda, retirando nodos que fallan entre rondas."""
-    if rounds < 0 or not 0 <= failure_probability <= 1:
+    if (not isinstance(rounds, int) or isinstance(rounds, bool) or rounds < 0
+            or not math.isfinite(failure_probability)
+            or not 0 <= failure_probability <= 1):
         raise ValueError("rondas y probabilidad de fallo no son válidas")
     rng = random.Random(seed)
     active = set(range(node_count))
@@ -42,11 +45,14 @@ def neighborhood_utility(base_utility: SetUtility,
                          neighbors: Sequence[set[int]],
                          influence: float) -> SetUtility:
     """Añade una penalización/beneficio por vecinos de los seleccionados."""
-    if len(neighbors) == 0 or influence < 0:
+    if (len(neighbors) == 0 or any(
+            node < 0 or node >= len(neighbors)
+            for adjacency in neighbors for node in adjacency
+    ) or not math.isfinite(influence) or influence < 0):
         raise ValueError("vecindario e influencia no son válidos")
 
     def utility(selected: frozenset[int]) -> float:
         value = base_utility(selected)
         affected = {neighbor for node in selected for neighbor in neighbors[node]}
-        return value + influence * len(affected - set(selected))
+        return value + influence * len(affected)
     return utility

@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import heapq
+import math
 from typing import Sequence
 
 
@@ -17,10 +18,11 @@ def greedy_allocate(marginals: Sequence[Sequence[float]], budget: int) -> Alloca
     ``marginals[i][j]`` es la ganancia de entregar la unidad ``j + 1`` al
     nodo ``i``. La concavidad discreta exige que cada fila no sea creciente.
     """
-    if budget < 0:
-        raise ValueError("budget debe ser no negativo")
-    if any(any(value < 0 for value in row) for row in marginals):
-        raise ValueError("las ganancias marginales no pueden ser negativas")
+    if not isinstance(budget, int) or isinstance(budget, bool) or budget < 0:
+        raise ValueError("budget debe ser un entero no negativo")
+    if any(any(not math.isfinite(value) or value < 0 for value in row)
+           for row in marginals):
+        raise ValueError("las ganancias deben ser finitas y no negativas")
     if any(any(row[j] < row[j + 1] for j in range(len(row) - 1))
            for row in marginals):
         raise ValueError("cada utilidad debe ser cóncava discreta")
@@ -54,7 +56,8 @@ def utility_from_marginals(marginals: Sequence[Sequence[float]],
         raise ValueError("amounts debe tener una entrada por nodo")
     total = 0.0
     for row, amount in zip(marginals, amounts):
-        if amount < 0 or amount > len(row):
+        if (not isinstance(amount, int) or isinstance(amount, bool)
+                or amount < 0 or amount > len(row)):
             raise ValueError("cantidad asignada fuera del rango")
         total += sum(row[:amount])
     return total
