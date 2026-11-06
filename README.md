@@ -39,7 +39,10 @@ sean reproducibles.
   externalidades sobre vecinos.
 - [`red_project/experiments.py`](red_project/experiments.py): generación,
   medición repetida, estadística y comparación experimental.
-- [`report.md`](report.md): formalización, pruebas, complejidad y garantías.
+- [`Informe.pdf`](Informe.pdf): informe único con formalización, pruebas,
+  complejidad, reducción polinomial y garantías.
+- [`Manual Técnico.pdf`](Manual%20T%C3%A9cnico.pdf): estructura del código, contratos,
+  formatos de entrada/salida e instrucciones de ejecución.
 
 La fuerza bruta se reserva para tamaños pequeños, porque su complejidad es
 `O(C(N,k) * k)` y sirve como referencia óptima para medir la aproximación.
